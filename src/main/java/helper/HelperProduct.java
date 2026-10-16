@@ -15,12 +15,21 @@ public class HelperProduct extends HelperBase {
     private final By cartBadge =
             By.className("shopping_cart_badge");
 
+    private final By addBikeLightButton =
+            By.id("add-to-cart-sauce-labs-bike-light");
 
     public void addBackpackToCart() {
         click(addBackpackButton);
     }
 
+    public void addBikeLightToCart() {
+        click(addBikeLightButton);
+    }
+
     public String getCartCount() {
         return getText(cartBadge);
     }
+
+
+
 }

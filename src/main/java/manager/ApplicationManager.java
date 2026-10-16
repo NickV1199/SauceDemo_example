@@ -5,6 +5,12 @@ import helper.HelperProduct;
 import helper.HelperCart;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import java.util.Map;
+
+import pages.CartPage;
+import pages.LoginPage;
+import pages.InventoryPage;
 
 public class ApplicationManager {
 
@@ -15,7 +21,26 @@ public class ApplicationManager {
     private HelperCart cart;
 
     public void init(){
-        driver = new ChromeDriver();
+
+        ChromeOptions options = new ChromeOptions();
+
+        options.setExperimentalOption("prefs", Map.of(
+                "credentials_enable_service", false,
+                "profile.password_manager_enabled", false,
+                "profile.password_manager_leak_detection", false
+        ));
+
+        options.addArguments(
+                "--disable-features=PasswordLeakDetection"
+        );
+
+        driver = new ChromeDriver(options);
+
+        loginPage = new LoginPage(driver);
+        inventoryPage = new InventoryPage(driver);
+        cartPage = new CartPage(driver);
+
+
         driver.manage().window().maximize();
         driver.get("https://www.saucedemo.com/");
 
@@ -46,5 +71,24 @@ public class ApplicationManager {
             driver = null;
         }
     }
+
+    private LoginPage loginPage;
+
+    public LoginPage loginPage() {
+        return loginPage;
+    }
+
+    private InventoryPage inventoryPage;
+
+    public InventoryPage inventoryPage() {
+        return inventoryPage;
+    }
+
+    private CartPage cartPage;
+
+    public CartPage cartPage() {
+        return cartPage;
+    }
+
 
 }
