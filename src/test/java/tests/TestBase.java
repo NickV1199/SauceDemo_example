@@ -1,3 +1,4 @@
+
 package tests;
 
 import io.qameta.allure.Allure;
@@ -28,12 +29,14 @@ public class TestBase {
     @AfterMethod(alwaysRun = true)
     public void tearDown(ITestResult result) {
         try {
+            WebDriver driver = getDriver();
+
             if (result.getStatus() == ITestResult.FAILURE
-                    && getDriver() instanceof TakesScreenshot) {
+                    && driver instanceof TakesScreenshot) {
 
                 try {
                     byte[] screenshot =
-                            ((TakesScreenshot) getDriver())
+                            ((TakesScreenshot) driver)
                                     .getScreenshotAs(OutputType.BYTES);
 
                     Allure.addAttachment(

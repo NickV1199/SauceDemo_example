@@ -1,5 +1,7 @@
+
 package manager;
 
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -11,6 +13,8 @@ import pages.InventoryPage;
 import java.util.Map;
 
 public class ApplicationManager {
+
+    private static final String BASE_URL = "https://www.saucedemo.com/";
 
     private WebDriver driver;
 
@@ -28,11 +32,11 @@ public class ApplicationManager {
                 "profile.password_manager_leak_detection", false
         ));
 
-        options.addArguments(
-                "--disable-features=PasswordLeakDetection"
-        );
+        options.addArguments("--disable-features=PasswordLeakDetection");
 
-        if (System.getenv("CI") != null) {
+        boolean isCI = System.getenv("CI") != null;
+
+        if (isCI) {
             options.addArguments(
                     "--headless=new",
                     "--no-sandbox",
@@ -43,12 +47,17 @@ public class ApplicationManager {
 
         driver = new ChromeDriver(options);
 
+        if (isCI) {
+            driver.manage().window().setSize(new Dimension(1920, 1080));
+        } else {
+            driver.manage().window().maximize();
+        }
+
         loginPage = new LoginPage(driver);
         inventoryPage = new InventoryPage(driver);
         cartPage = new CartPage(driver);
 
-        driver.manage().window().maximize();
-        driver.get("https://www.saucedemo.com/");
+        driver.get(BASE_URL);
     }
 
     public WebDriver getDriver() {
