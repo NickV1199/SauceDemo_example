@@ -2,7 +2,6 @@ package pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import pages.BasePage;
 
 public class CheckoutPage extends BasePage {
 
@@ -24,4 +23,23 @@ public class CheckoutPage extends BasePage {
         type(lastNameInput, lastName);
         type(postalCodeInput, postalCode);
     }
+
+    public CheckoutOverviewPage continueCheckout() {
+        click(continueButton);
+        return new CheckoutOverviewPage(driver);
+    }
+
+    private final By errorMessage =
+            By.cssSelector("[data-test='error']");
+
+    public String getErrorMessage() {
+        return getText(errorMessage);
+    }
+
+    public void clickContinue() {
+        click(continueButton);
+    }
+
+
+
 }

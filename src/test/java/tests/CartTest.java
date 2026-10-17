@@ -2,8 +2,7 @@ package tests;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import pages.CartPage;
-import pages.InventoryPage;
+import pages.*;
 
 import java.util.List;
 
@@ -378,6 +377,8 @@ public class CartTest extends TestBase {
                 2
         );
     }
+
+
 
 
 }

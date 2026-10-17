@@ -3,6 +3,7 @@ package pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import io.qameta.allure.Step;
 
 public class LoginPage extends BasePage {
 
@@ -15,6 +16,7 @@ public class LoginPage extends BasePage {
     private final By loginButton = By.id("login-button");
 
 
+    @Step("Login as user: {username}")
     public void login(String username, String password) {
         type(usernameField, username);
         type(passwordField, password);

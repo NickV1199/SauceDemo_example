@@ -1,5 +1,6 @@
 package pages;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -33,6 +34,7 @@ public class InventoryPage extends BasePage {
         return Integer.parseInt(getText(cartBadge));
     }
 
+    @Step("Add product to cart: {productId}")
     public void addProductToCart(String productId) {
         By addButton = By.id("add-to-cart-" + productId);
         click(addButton);
@@ -46,8 +48,9 @@ public class InventoryPage extends BasePage {
     private final By cartButton =
             By.className("shopping_cart_link");
 
+    @Step("Open shopping cart")
     public CartPage openCart() {
-        click(cartButton);
+        click(By.className("shopping_cart_link"));
         return new CartPage(driver);
     }
 

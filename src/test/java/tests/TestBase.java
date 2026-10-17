@@ -8,7 +8,7 @@ public class TestBase {
 
     protected ApplicationManager app;
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void setUp() {
         app = new ApplicationManager();
         app.init();
