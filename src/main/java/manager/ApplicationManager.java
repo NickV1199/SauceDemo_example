@@ -20,7 +20,7 @@ public class ApplicationManager {
     private HelperProduct product;
     private HelperCart cart;
 
-    public void init(){
+    public void init() {
 
         ChromeOptions options = new ChromeOptions();
 
@@ -34,12 +34,20 @@ public class ApplicationManager {
                 "--disable-features=PasswordLeakDetection"
         );
 
+        if (System.getenv("CI") != null) {
+            options.addArguments(
+                    "--headless=new",
+                    "--no-sandbox",
+                    "--disable-dev-shm-usage",
+                    "--window-size=1920,1080"
+            );
+        }
+
         driver = new ChromeDriver(options);
 
         loginPage = new LoginPage(driver);
         inventoryPage = new InventoryPage(driver);
         cartPage = new CartPage(driver);
-
 
         driver.manage().window().maximize();
         driver.get("https://www.saucedemo.com/");
