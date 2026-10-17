@@ -19,6 +19,7 @@ public class CartPage extends BasePage {
     private final By productNames =
             By.className("inventory_item_name");
 
+    @Step("Get products count from cart")
     public int getProductsCount() {
         wait.until(
                 ExpectedConditions.visibilityOfElementLocated(
@@ -26,9 +27,7 @@ public class CartPage extends BasePage {
                 )
         );
 
-        return driver.findElements(
-                By.className("cart_item")
-        ).size();
+        return driver.findElements(cartItems).size();
     }
 
     @Step("Get product names from cart")
@@ -68,6 +67,7 @@ public class CartPage extends BasePage {
     private final By continueShoppingButton =
             By.id("continue-shopping");
 
+    @Step("Continue shopping")
     public InventoryPage continueShopping() {
         click(continueShoppingButton);
         return new InventoryPage(driver);

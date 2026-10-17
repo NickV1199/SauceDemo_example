@@ -1,5 +1,6 @@
 package pages;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -10,12 +11,11 @@ import java.util.List;
 
 public class CheckoutOverviewPage extends BasePage {
 
-    public CheckoutOverviewPage(WebDriver driver) {
-        super(driver);
-    }
+    private final By products =
+            By.className("cart_item");
 
-    private final By productNames =
-            By.className("inventory_item_name");
+    private final By productPrices =
+            By.className("inventory_item_price");
 
     private final By subtotalLabel =
             By.className("summary_subtotal_label");
@@ -26,37 +26,35 @@ public class CheckoutOverviewPage extends BasePage {
     private final By totalLabel =
             By.className("summary_total_label");
 
-    private final By products =
-            By.className("cart_item");
+    private final By finishButton =
+            By.id("finish");
 
-    public int getProductsCount() {
-        wait.until(
-                ExpectedConditions.visibilityOfElementLocated(
-                        By.className("cart_item")
-                )
-        );
-        return driver.findElements(
-                By.className("cart_item")
-        ).size();
+    public CheckoutOverviewPage(WebDriver driver) {
+        super(driver);
     }
 
+    @Step("Get products count on checkout overview")
+    public int getProductsCount() {
+        wait.until(
+                ExpectedConditions.visibilityOfElementLocated(products)
+        );
+
+        return driver.findElements(products).size();
+    }
+
+    @Step("Get subtotal")
     public String getSubtotal() {
         return getText(subtotalLabel);
     }
 
+    @Step("Get tax")
     public String getTax() {
         return getText(taxLabel);
     }
 
+    @Step("Get total")
     public String getTotal() {
         return getText(totalLabel);
-    }
-
-    private final By finishButton = By.id("finish");
-
-    public CheckoutCompletePage finishCheckout() {
-        click(finishButton);
-        return new CheckoutCompletePage(driver);
     }
 
     private BigDecimal parsePrice(String text) {
@@ -64,24 +62,29 @@ public class CheckoutOverviewPage extends BasePage {
         return new BigDecimal(price);
     }
 
+    @Step("Get subtotal amount")
     public BigDecimal getSubtotalAmount() {
         return parsePrice(getSubtotal());
     }
 
+    @Step("Get tax amount")
     public BigDecimal getTaxAmount() {
         return parsePrice(getTax());
     }
 
+    @Step("Get total amount")
     public BigDecimal getTotalAmount() {
         return parsePrice(getTotal());
     }
 
-    private final By productPrices =
-            By.className("inventory_item_price");
-
-
+    @Step("Calculate total price of products")
     public BigDecimal getProductsTotalPrice() {
-        List<WebElement> prices = driver.findElements(productPrices);
+
+        List<WebElement> prices = wait.until(
+                ExpectedConditions.visibilityOfAllElementsLocatedBy(
+                        productPrices
+                )
+        );
 
         BigDecimal sum = BigDecimal.ZERO;
 
@@ -89,10 +92,13 @@ public class CheckoutOverviewPage extends BasePage {
             BigDecimal productPrice = parsePrice(price.getText());
             sum = sum.add(productPrice);
         }
+
         return sum;
     }
 
-
-
-
+    @Step("Finish checkout")
+    public CheckoutCompletePage finishCheckout() {
+        click(finishButton);
+        return new CheckoutCompletePage(driver);
+    }
 }

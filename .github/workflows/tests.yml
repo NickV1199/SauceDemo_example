@@ -1,8 +1,12 @@
+
 name: Selenium Tests
 
 on:
   push:
   pull_request:
+
+permissions:
+  contents: read
 
 jobs:
   test:
@@ -37,3 +41,4 @@ jobs:
           path: |
             build/reports/tests/test/
             build/allure-results/
+          if-no-files-found: warn

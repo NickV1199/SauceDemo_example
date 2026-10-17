@@ -1,7 +1,6 @@
 package tests;
 
 import io.qameta.allure.Allure;
-import listeners.AllureListener;
 import manager.ApplicationManager;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -9,10 +8,8 @@ import org.openqa.selenium.WebDriver;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Listeners;
 
 import java.io.ByteArrayInputStream;
-
 
 public class TestBase {
 
@@ -31,16 +28,27 @@ public class TestBase {
     @AfterMethod(alwaysRun = true)
     public void tearDown(ITestResult result) {
         try {
-            if (result.getStatus() == ITestResult.FAILURE && getDriver() != null) {
-                byte[] screenshot = ((TakesScreenshot) getDriver())
-                        .getScreenshotAs(OutputType.BYTES);
+            if (result.getStatus() == ITestResult.FAILURE
+                    && getDriver() instanceof TakesScreenshot) {
 
-                Allure.addAttachment(
-                        "Screenshot on failure",
-                        "image/png",
-                        new ByteArrayInputStream(screenshot),
-                        ".png"
-                );
+                try {
+                    byte[] screenshot =
+                            ((TakesScreenshot) getDriver())
+                                    .getScreenshotAs(OutputType.BYTES);
+
+                    Allure.addAttachment(
+                            "Screenshot on failure",
+                            "image/png",
+                            new ByteArrayInputStream(screenshot),
+                            ".png"
+                    );
+
+                } catch (Exception e) {
+                    System.err.println(
+                            "Failed to capture screenshot: "
+                                    + e.getMessage()
+                    );
+                }
             }
         } finally {
             if (app != null) {

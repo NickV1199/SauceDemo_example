@@ -24,8 +24,7 @@ public class LoginTest extends TestBase {
         );
 
         Assert.assertTrue(
-                app.getDriver().getCurrentUrl()
-                        .contains("inventory.html"),
+                app.inventoryPage().isInventoryPageOpened(),
                 "User was not redirected to inventory page"
         );
     }
