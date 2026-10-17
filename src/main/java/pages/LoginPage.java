@@ -35,5 +35,11 @@ public class LoginPage extends BasePage {
         return getText(errorMessage);
     }
 
+    @Step("Check that login form is displayed")
+    public boolean isLoginFormDisplayed() {
+        return driver.findElements(By.id("user-name")).size() > 0
+                && driver.findElements(By.id("password")).size() > 0
+                && driver.findElements(By.id("login-button")).size() > 0;
+    }
 
 }

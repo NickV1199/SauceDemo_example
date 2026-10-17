@@ -1,10 +1,9 @@
 package pages;
 
 import io.qameta.allure.Step;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,18 +31,32 @@ public class CartPage extends BasePage {
         ).size();
     }
 
+    @Step("Get product names from cart")
     public List<String> getProductNames() {
-        List<WebElement> elements = wait.until(
-                ExpectedConditions.visibilityOfAllElementsLocatedBy(productNames)
-        );
+        return wait.until(driver -> {
+            List<WebElement> elements = driver.findElements(productNames);
 
-        List<String> names = new ArrayList<>();
+            if (elements.isEmpty()) {
+                return null;
+            }
 
-        for (WebElement element : elements) {
-            names.add(element.getText());
-        }
+            List<String> names = new ArrayList<>();
 
-        return names;
+            try {
+                for (WebElement element : elements) {
+                    if (!element.isDisplayed()) {
+                        return null;
+                    }
+
+                    names.add(element.getText());
+                }
+
+                return names;
+
+            } catch (StaleElementReferenceException e) {
+                return null;
+            }
+        });
     }
 
     @Step("Remove product from cart: {productId}")
@@ -68,6 +81,30 @@ public class CartPage extends BasePage {
         return new CheckoutPage(driver);
     }
 
+    @Step("Check if cart is empty")
+    public boolean isCartEmpty() {
+        wait.until(
+                ExpectedConditions.visibilityOfElementLocated(
+                        By.id("cart_contents_container")
+                )
+        );
 
+        return driver.findElements(cartItems).isEmpty();
+    }
+
+    @Step("Remove product by name: {productName}")
+    public void removeProductByName(String productName) {
+
+        By removeButton = By.xpath(
+                "//div[contains(@class,'cart_item')]" +
+                        "[.//div[contains(@class,'inventory_item_name') " +
+                        "and normalize-space()='" + productName + "']]" +
+                        "//button"
+        );
+
+        wait.until(
+                ExpectedConditions.elementToBeClickable(removeButton)
+        ).click();
+    }
 
 }

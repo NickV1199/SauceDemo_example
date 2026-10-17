@@ -26,47 +26,39 @@ public class CartTest extends TestBase {
     @Test
     public void verifyProductInCart() {
 
-        app.user().login(
-                "standard_user",
-                "secret_sauce"
-        );
+        app.loginPage().login("standard_user",
+                "secret_sauce");
 
-        app.product().addBackpackToCart();
+        app.inventoryPage().addProductToCart("sauce-labs-backpack");
 
-        app.cart().openCart();
+        CartPage cartPage = app.inventoryPage().openCart();
 
-        String actualProductName =
-                app.cart().getProductName();
-
-        Assert.assertEquals(
-                actualProductName,
-                "Sauce Labs Backpack",
-                "Incorrect product in cart"
+        Assert.assertTrue(
+                cartPage.getProductNames().contains("Sauce Labs Backpack"),
+                "Backpack was not found in cart"
         );
     }
 
 
     @Test
     public void removeBackpackFromCart() {
-        app.user().login(
-                "standard_user",
-                "secret_sauce"
-        );
 
-        app.product().addBackpackToCart();
+        app.loginPage().login("standard_user",
+                "secret_sauce");
 
-        app.cart().openCart();
+        app.inventoryPage().addProductToCart("sauce-labs-backpack");
 
-        Assert.assertEquals(
-                app.cart().getProductName(),
-                "Sauce Labs Backpack",
+        CartPage cartPage = app.inventoryPage().openCart();
+
+        Assert.assertTrue(
+                cartPage.getProductNames().contains("Sauce Labs Backpack"),
                 "Backpack was not added to cart"
         );
 
-        app.cart().removeBackpack();
+        cartPage.removeProduct("sauce-labs-backpack");
 
         Assert.assertTrue(
-                app.cart().isCartEmpty(),
+                cartPage.isCartEmpty(),
                 "Cart is not empty after removing the product"
         );
     }
@@ -75,24 +67,21 @@ public class CartTest extends TestBase {
     @Test
     public void addTwoProductsToCart() {
 
-        app.user().login(
-                "standard_user",
-                "secret_sauce"
-        );
+        app.loginPage().login("standard_user", "secret_sauce");
 
-        app.product().addBackpackToCart();
-        app.product().addBikeLightToCart();
+        app.inventoryPage().addProductToCart("sauce-labs-backpack");
+        app.inventoryPage().addProductToCart("sauce-labs-bike-light");
 
         Assert.assertEquals(
-                app.product().getCartCount(),
-                "2",
+                app.inventoryPage().getCartCount(),
+                2,
                 "Cart badge should show 2 products"
         );
 
-        app.cart().openCart();
+        CartPage cartPage = app.inventoryPage().openCart();
 
         Assert.assertEquals(
-                app.cart().getProductsCount(),
+                cartPage.getProductsCount(),
                 2,
                 "Cart should contain 2 products"
         );
@@ -102,18 +91,14 @@ public class CartTest extends TestBase {
     @Test
     public void verifyTwoProductNamesInCart() {
 
-        app.user().login(
-                "standard_user",
-                "secret_sauce"
-        );
+        app.loginPage().login("standard_user", "secret_sauce");
 
-        app.product().addBackpackToCart();
-        app.product().addBikeLightToCart();
+        app.inventoryPage().addProductToCart("sauce-labs-backpack");
+        app.inventoryPage().addProductToCart("sauce-labs-bike-light");
 
-        app.cart().openCart();
+        CartPage cartPage = app.inventoryPage().openCart();
 
-        List<String> actualNames =
-                app.cart().getProductNames();
+        List<String> actualNames = cartPage.getProductNames();
 
         Assert.assertEquals(
                 actualNames.size(),
@@ -135,27 +120,36 @@ public class CartTest extends TestBase {
 
     @Test
     public void removeOneOfTwoProducts() {
-        app.user().login("standard_user", "secret_sauce");
 
-        app.product().addBackpackToCart();
-        app.product().addBikeLightToCart();
+        app.loginPage().login("standard_user", "secret_sauce");
 
-        app.cart().openCart();
+        app.inventoryPage().addProductToCart("sauce-labs-backpack");
+        app.inventoryPage().addProductToCart("sauce-labs-bike-light");
 
-        Assert.assertEquals(app.cart().getProductsCount(), 2);
-
-        app.cart().removeProduct("sauce-labs-backpack");
+        CartPage cartPage = app.inventoryPage().openCart();
 
         Assert.assertEquals(
-                app.cart().getProductsCount(),
+                cartPage.getProductsCount(),
+                2,
+                "Cart should initially contain 2 products"
+        );
+
+        cartPage.removeProductByName("Sauce Labs Backpack");
+
+        Assert.assertEquals(
+                cartPage.getProductsCount(),
                 1,
-                "Cart should contain one product"
+                "Cart should contain 1 product after removal"
         );
 
         Assert.assertTrue(
-                app.cart().getProductNames()
-                        .contains("Sauce Labs Bike Light"),
+                cartPage.getProductNames().contains("Sauce Labs Bike Light"),
                 "Bike Light should remain in cart"
+        );
+
+        Assert.assertFalse(
+                cartPage.getProductNames().contains("Sauce Labs Backpack"),
+                "Backpack should be removed from cart"
         );
     }
 
@@ -163,24 +157,23 @@ public class CartTest extends TestBase {
     @Test
     public void removeProductByNameTest() {
 
-        app.user().login("standard_user", "secret_sauce");
+        app.loginPage().login("standard_user", "secret_sauce");
 
-        app.product().addBackpackToCart();
-        app.product().addBikeLightToCart();
+        app.inventoryPage().addProductToCart("sauce-labs-backpack");
+        app.inventoryPage().addProductToCart("sauce-labs-bike-light");
 
-        app.cart().openCart();
+        CartPage cartPage = app.inventoryPage().openCart();
 
-        app.cart().removeProductByName("Sauce Labs Backpack");
+        cartPage.removeProductByName("Sauce Labs Backpack");
 
         Assert.assertEquals(
-                app.cart().getProductsCount(),
+                cartPage.getProductsCount(),
                 1,
                 "Cart should contain one product"
         );
 
         Assert.assertTrue(
-                app.cart().getProductNames()
-                        .contains("Sauce Labs Bike Light"),
+                cartPage.getProductNames().contains("Sauce Labs Bike Light"),
                 "Bike Light should remain in cart"
         );
     }

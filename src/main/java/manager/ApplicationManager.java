@@ -1,24 +1,22 @@
 package manager;
 
-import helper.HelperUser;
-import helper.HelperProduct;
-import helper.HelperCart;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import java.util.Map;
 
 import pages.CartPage;
 import pages.LoginPage;
 import pages.InventoryPage;
 
+import java.util.Map;
+
 public class ApplicationManager {
 
     private WebDriver driver;
 
-    private HelperUser user;
-    private HelperProduct product;
-    private HelperCart cart;
+    private LoginPage loginPage;
+    private InventoryPage inventoryPage;
+    private CartPage cartPage;
 
     public void init() {
 
@@ -51,52 +49,28 @@ public class ApplicationManager {
 
         driver.manage().window().maximize();
         driver.get("https://www.saucedemo.com/");
-
-        user = new HelperUser(driver);
-        product = new HelperProduct(driver);
-        cart = new HelperCart(driver);
     }
 
-    public WebDriver getDriver(){
+    public WebDriver getDriver() {
         return driver;
     }
-
-    public HelperUser user(){
-        return user;
-    }
-
-    public HelperProduct product() {
-        return product;
-    }
-
-    public HelperCart cart() {
-        return cart;
-    }
-
-    public void stop(){
-        if (driver != null){
-            driver.quit();
-            driver = null;
-        }
-    }
-
-    private LoginPage loginPage;
 
     public LoginPage loginPage() {
         return loginPage;
     }
 
-    private InventoryPage inventoryPage;
-
     public InventoryPage inventoryPage() {
         return inventoryPage;
     }
-
-    private CartPage cartPage;
 
     public CartPage cartPage() {
         return cartPage;
     }
 
-
+    public void stop() {
+        if (driver != null) {
+            driver.quit();
+            driver = null;
+        }
+    }
 }

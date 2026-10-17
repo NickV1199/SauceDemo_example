@@ -3,16 +3,25 @@ package tests;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.testng.annotations.DataProvider;
 
 public class LoginTest extends TestBase {
 
-    @Test
+    @Test(groups = {"regression"})
+    public void checkLoginElements() {
+
+        Assert.assertTrue(
+                app.loginPage().isLoginFormDisplayed(),
+                "Login form elements were not found"
+        );
+    }
+
+    @Test(groups = {"smoke", "regression"})
     public void loginWithValidCredentials() {
 
         app.loginPage().login(
                 "standard_user",
-                "secret_sauce");
+                "secret_sauce"
+        );
 
         Assert.assertTrue(
                 app.getDriver().getCurrentUrl()
@@ -21,58 +30,17 @@ public class LoginTest extends TestBase {
         );
     }
 
-    @DataProvider(name = "invalidLoginData")
-    public Object[][] invalidLoginData() {
-        return new Object[][]{
-                {
-                        "standard_user",
-                        "wrong_password",
-                        "Username and password do not match"
-                },
-                {
-                        "",
-                        "secret_sauce",
-                        "Username is required"
-                },
-                {
-                        "locked_out_user",
-                        "secret_sauce",
-                        "Sorry, this user has been locked out"
-                },
-                {
-                        "standard_user",
-                        "",
-                        "Password is required"
-                }
-        };
-    }
-
-    @Test(dataProvider = "invalidLoginData")
-    public void loginWithInvalidCredentials(
-            String username,
-            String password,
-            String expectedError) {
-
-        app.loginPage().login(username, password);
-
-        String actualError = app.loginPage().getErrorMessage();
-
-        Assert.assertTrue(
-                actualError.contains(expectedError),
-                "Expected error: " + expectedError
-                        + ", but got: " + actualError
-        );
-    }
-
-
-
-
     @DataProvider(name = "invalidCredentials")
     public Object[][] invalidCredentials() {
         return new Object[][]{
                 {
                         "standard_user",
                         "wrong_password",
+                        "Epic sadface: Username and password do not match any user in this service"
+                },
+                {
+                        "wrong_user",
+                        "secret_sauce",
                         "Epic sadface: Username and password do not match any user in this service"
                 },
                 {
@@ -98,11 +66,15 @@ public class LoginTest extends TestBase {
         };
     }
 
-    @Test(dataProvider = "invalidCredentials")
+    @Test(
+            dataProvider = "invalidCredentials",
+            groups = {"regression"}
+    )
     public void invalidLoginTest(
             String username,
             String password,
-            String expectedError) {
+            String expectedError
+    ) {
 
         app.loginPage().login(username, password);
 
@@ -114,48 +86,4 @@ public class LoginTest extends TestBase {
                 "Error message does not match"
         );
     }
-
-
-
-
-
-
-    @Test
-    public void loginWithInvalidPasswordTest(){
-        app.loginPage().login(
-                "standard_user",
-                "wrong_password");
-
-        String actualError = app.loginPage().getErrorMessage();
-        String expectedError =
-                "Epic sadface: Username and password do not match any user in this service";
-
-        Assert.assertEquals(
-                actualError,
-                expectedError,
-                "Error message should match"
-        );
-    }
-
-
-    @Test
-    public void loginWithInvalidUsernameTest(){
-        app.loginPage().login(
-                "wrong_user",
-                "secret_sauce");
-
-        String actualError = app.loginPage().getErrorMessage();
-        String expectedError =
-                "Epic sadface: Username and password do not match any user in this service";
-
-        Assert.assertEquals(
-                actualError,
-                expectedError,
-                "Error message should match"
-        );
-
-
-    }
-
-
 }
