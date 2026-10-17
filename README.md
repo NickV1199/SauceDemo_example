@@ -1,5 +1,7 @@
 # SauceDemo UI Test Automation
 
+[![Selenium Tests](https://github.com/NickV1199/SauceDemo_example/actions/workflows/tests.yml/badge.svg)](https://github.com/NickV1199/SauceDemo_example/actions/workflows/tests.yml)
+
 Automated UI testing project for [SauceDemo](https://www.saucedemo.com/), a demo e-commerce website.
 
 The project demonstrates automated functional testing using **Java, Selenium WebDriver, TestNG, and the Page Object Model (POM)**, with Allure reporting and GitHub Actions CI.
